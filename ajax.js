@@ -2,13 +2,25 @@ const MAIN_URL = "https://dadosabertos.camara.leg.br/api/v2/";
 const URL_FOTO = "https://www.camara.leg.br/internet/deputado/bandep/";
 var listaDeDeputados;
 var itensPorPagina = 6;
+var listaDeNomes = [];
 
 $(document).ready(function(){
   $.get(MAIN_URL + "deputados?ordem=ASC&ordenarPor=nome", function(data, status){
+
     listaDeDeputados = data.dados;
+
+    listaDeDeputados.forEach(salvarNomes);
+
+    console.log(listaDeNomes)
+
+    $('input.autocomplete').autocomplete({
+      data: listaDeNomes
+    });
+
+    // console.log(listaDeNomes);
+
     var totalDept = listaDeDeputados.length;
     var qtdPaginas = Math.ceil(totalDept / itensPorPagina);
-
 
     // console.log(itensPagAtual);
     var arrayQtdPaginas = [];
@@ -17,6 +29,7 @@ $(document).ready(function(){
       paginacao += `<li class="waves-effect" id=${i} onclick="irParaPagina(${i})">
       <a href="#!">${i}</a>
       </li>`;
+
     }
 
     $("#paginacao").append(`
@@ -79,3 +92,11 @@ $(document).ready(function(){
       $("#resultados").append(cardDept);
     } );
   };
+
+  function salvarNomes(item, index){
+    listaDeNomes[item.nome] = item.urlFoto;
+  }
+
+  $("#busca ul").click(function(){
+    console.log(this);
+  })
